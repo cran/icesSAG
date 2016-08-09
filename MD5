@@ -1,0 +1,15 @@
+1975e4e3f2b37bf179b7fa9d9350bf26 *DESCRIPTION
+d318a852a16e455519e36236e00d7cb2 *NAMESPACE
+efb6812497cabdea67b0971b73524d26 *NEWS
+e673c92cdaabb39b864253ad99bf1976 *R/checkInputs.R
+a41de304829d9afab3af3d23610acac2 *R/getFishStockReferencePoints.R
+2a8eafd07e38e398b0861da486af5aec *R/getListStocks.R
+4149647a8e057afb7d26f0d9dc1180e5 *R/getSummaryTable.R
+034c2710decc3fbd653594d3c1a12b63 *R/icesSAG-package.R
+8872530a0bc86f804ec9fd89e01e5440 *R/utilities.R
+a0b53b4d5acda1450014a5459e6cb8fc *man/getFishStockReferencePoints.Rd
+445bf608048d720f5068cc28442b167e *man/getListStocks.Rd
+168df5835a4b93c3552c65d554570c16 *man/getSummaryTable.Rd
+9ed7d9c1c71349131f3c284b94e6db34 *man/icesSAG-package.Rd
+9efc2072d421c28bc17f148f7b197a43 *tests/testthat.R
+d781351f0ed6a8d913df7416c1c87655 *tests/testthat/test-test.R
