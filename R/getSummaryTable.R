@@ -1,53 +1,45 @@
-#' Query fish stock reference points for a stock
+#' Get a Summary Table of Historical Stock Size
 #'
-#' Returns stock assessment summary table of all published stocks for a given year
+#' Get summary results of historical stock size, recruitment, and fishing
+#' pressure.
 #'
-#' @param year the numeric year of the stock assessment summary output, e.g. 2010. All assessment years can be queried with 0.
+#' @param key the unique identifier of the stock assessment
 #'
-#'
-#' @return A data.frame.
+#' @return A data frame.
 #'
 #' @seealso
-#' \code{\link{getListStocks}} returns data frame of fish stocks for a given year
+#' \code{\link{getSAG}} supports querying many years and quarters in one
+#'   function call.
 #'
-#' \code{\link{getFishStockReferencePoints}} Returns the biological reference points for all published stocks in a year.
+#' \code{\link{getListStocks}} and \code{\link{getFishStockReferencePoints}} get
+#'   a list of stocks and reference points.
 #'
 #' \code{\link{icesSAG-package}} gives an overview of the package.
 #'
-#' @author Colin Millar and Scott Large
+#' @author Colin Millar and Scott Large.
 #'
 #' @examples
-#' \dontrun{getSummaryTable(year = 2015)}
-#'
+#' stocklist <- getListStocks(2016)
+#' id <- grep("cod-2224", stocklist$FishStockName)
+#' stocklist[id,]
+#' key <- stocklist$key[id]
+#' sumtab <- getSummaryTable(key)
+#' head(sumtab)
+#' attributes(sumtab)$notes
 #'
 #' @export
-#'
-#' @importFrom dplyr bind_rows
 
-getSummaryTable <- function(year) {
-
-  # check websevices are running
+getSummaryTable <- function(key) {
+  # check web services are running
   if (!checkSAGWebserviceOK()) return (FALSE)
 
-  # check year
-  if (!checkYearOK(year)) return (FALSE)
-
-  # get keys for year
-  all_years <- getListStocks(year = year)
-  published_keys <- unique(all_years$key[!grepl("Not", all_years$Status)])
-
-  # read and parse XML from api
+  # read XML string and parse to data frame
   url <-
     sprintf(
-      "https://standardgraphs.ices.dk/StandardGraphsWebServices.asmx/getSummaryTable?key=%s",
-      published_keys)
+      "https://sg.ices.dk/StandardGraphsWebServices.asmx/getSummaryTable?key=%s",
+      key)
+  out <- readSAG(url)
+  out <- parseSummary(out)
 
-
-  out <- do.call(bind_rows,
-                 lapply(url,
-                        function(x)
-                          parseSummary(curlSAG(url = x))))
-
-  # return
   out
 }
