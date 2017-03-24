@@ -19,13 +19,10 @@ Get biological reference points for all stocks in a given assessment year.
 stocklist <- getListStocks(2016)
 id <- grep("cod-2224", stocklist$FishStockName)
 stocklist[id,]
-key <- stocklist$key[id]
+key <- stocklist$AssessmentKey[id]
 refpts <- getFishStockReferencePoints(key)
 refpts
 
-}
-\author{
-Colin Millar and Scott Large.
 }
 \seealso{
 \code{\link{getSAG}} supports querying many years and quarters in one
@@ -36,4 +33,6 @@ Colin Millar and Scott Large.
 
 \code{\link{icesSAG-package}} gives an overview of the package.
 }
-
+\author{
+Colin Millar and Scott Large.
+}

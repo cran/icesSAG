@@ -20,14 +20,11 @@ pressure.
 stocklist <- getListStocks(2016)
 id <- grep("cod-2224", stocklist$FishStockName)
 stocklist[id,]
-key <- stocklist$key[id]
+key <- stocklist$AssessmentKey[id]
 sumtab <- getSummaryTable(key)
 head(sumtab)
 attributes(sumtab)$notes
 
-}
-\author{
-Colin Millar and Scott Large.
 }
 \seealso{
 \code{\link{getSAG}} supports querying many years and quarters in one
@@ -38,4 +35,6 @@ Colin Millar and Scott Large.
 
 \code{\link{icesSAG-package}} gives an overview of the package.
 }
-
+\author{
+Colin Millar and Scott Large.
+}
