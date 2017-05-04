@@ -2,7 +2,8 @@
 #'
 #' Find a lookup key corresponding to a stock in a given assessment year.
 #'
-#' @param stock a stock name, e.g. cod-347d, or cod to find all cod stocks, or NULL to process all stocks.
+#' @param stock a stock name, e.g. cod-347d, or cod to find all cod stocks, or NULL (default)
+#'              to process all stocks.
 #' @param year the assessment year, e.g. 2015, or 0 to process all years.
 #' @param published whether to include only years where status is "Published".
 #' @param regex whether to match the stock name as a regular expression.
@@ -26,17 +27,18 @@ NULL
 
 #' @rdname findAssessmentKeydocs
 #' @export
-findAssessmentKey <- function(stock, year = 0, regex = TRUE, full = FALSE) {
+findAssessmentKey <- function(stock = NULL, year = 0, published = TRUE, regex = TRUE, full = FALSE) {
   # get list of all stocks for all supplied years
   out <- do.call(rbind, lapply(year, getListStocks))
 
   # apply filters
-  if (!getOption("icesSAG.use_token")) {
+  #  if (!getOption("icesSAG.use_token")) {
+  if (published) {
     # restrict output to only published stocks
     out <- out[out$Status == "Published",]
   }
 
-  if (!missing(stock)) {
+  if (!is.null(stock)) {
     stock <- tolower(stock)
     if (!regex) stock <- paste0("^", stock, "$")
     select <- c(unlist(lapply(stock, grep, tolower(out$StockKeyLabel))),
@@ -47,6 +49,7 @@ findAssessmentKey <- function(stock, year = 0, regex = TRUE, full = FALSE) {
 
   # return
   if (full) {
+    row.names(out) <- NULL
     out
   } else {
     out$AssessmentKey
