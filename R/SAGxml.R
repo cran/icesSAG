@@ -5,14 +5,14 @@
 #'
 #' @param file an xml file name
 #' @param info a list of stock information
-#' @param fishdata a data.frame of fish data
+#' @param fishdata a data frame of fish data
 #'
-#' @return either a list contating info and fshdata, or an string containing the xml file.
+#' @return Either a list containing info and fishdata, or a string containing the xml file.
 #'
 #' @seealso
 #' \code{\link{stockInfo}} creates a list of stock information.
 #'
-#' \code{\link{stockFishdata}} creates a data.frame of fish stock summary data.
+#' \code{\link{stockFishdata}} creates a data frame of fish stock summary data.
 #'
 #' @examples
 #'
@@ -31,6 +31,10 @@ NULL
 #' @rdname readCreateSAGxml
 #' @export
 createSAGxml <- function(info, fishdata) {
+
+  # quick fix! Purpose must always be supplied
+  if (is.na(info$Purpose)) info$Purpose <- "Advice"
+
   # handy function to convert a list into an xml row
   list2xml <- function(x, xnames = NULL, sep = "") {
     if (!is.null(xnames)) {
@@ -82,7 +86,7 @@ sag_parseUpload <- function(x) {
   info <- do.call(stockInfo, info)
 
   # tidy fish data
-  fishdata <- sag_parse(x[names(x) == "Fish_Data"])
+  fishdata <- sag_parseTable(x[names(x) == "Fish_Data"])
   fishdata <- do.call(stockFishdata, fishdata)
 
   list(info = info, fishdata = fishdata)
@@ -99,6 +103,12 @@ sag_parseUpload <- function(x) {
 #' @param StockCode a stock name, e.g. cod-347d.
 #' @param AssessmentYear the assessment year, e.g. 2015.
 #' @param ContactPerson the email for the person responsible for uploading the stock data.
+#' @param StockCategory Category of the assessment used (see below)
+#' @param Purpose the purpose of the entry, options are "Advice", "Bench",
+#'                "InitAdvice", default is "Advice".
+#' @param ModelType the type of the model used (see below for links to more information)
+#' @param ModelName the name (acronym) of the model used if available
+#'                  (see below for links to more information)
 #' @param ... additional information, e.g. BMGT, FMSY, RecruitmentAge, ...
 #'
 #' @return A named sag.list, inheriting from a list, where all names are valid column names in the
@@ -106,23 +116,53 @@ sag_parseUpload <- function(x) {
 #'
 #' @author Colin Millar.
 #'
+#' @seealso
+#' Links to the relevant ICES vocabularies list are here
+#' StockCode: \url{http://vocab.ices.dk/?ref=357}
+#' StockCategory: \url{http://vocab.ices.dk/?ref=1526}
+#' Purpose: \url{http://vocab.ices.dk/?ref=1516}
+#' ModelType: \url{http://vocab.ices.dk/?ref=1524}
+#' ModelName: \url{http://vocab.ices.dk/?ref=1525}
+#'
+#' Link to the relevant format description is \url{http://datsu.ices.dk/web/selRep.aspx?Dataset=126}
+#'
 #' @examples
 #' info <-
-#'   stockInfo(StockCode = "cod.27.347d",
+#'   stockInfo(StockCode = "cod.27.47d20",
 #'             AssessmentYear = 2017,
+#'             StockCategory = 1,
+#'             ModelType = "A",
+#'             ModelName = "SCA",
 #'             ContactPerson = "itsme@fisheries.com")
 #'
 #'  info
 #'  info$mistake <- "oops"
 #'  info
 #'  # should have gotten a warning message
+#'
+#'  # use icesVocab to list valid codes etc.
+#'  library(icesVocab)
+#'  # print the list of valid stock codes
+#'  stock.codes <- getCodeList("ICES_StockCode")
+#'  stock.codes[1:10,1:2]
+#'
+#'  # print the list of assessment model types in the ICES vocabulary
+#'  model.types <- getCodeList("AssessmentModelType")
+#'  model.types[1:2]
+#'
+#'  # print the list of assessment model names in the ICES vocabulary
+#'  model.names <- getCodeList("AssessmentModelName")
+#'  model.names$Key
+#'
 #' @export
 
-stockInfo <- function(StockCode, AssessmentYear, ContactPerson, ...) {
+stockInfo <- function(StockCode, AssessmentYear, ContactPerson, StockCategory,
+                      Purpose = "Advice", ModelType, ModelName, ...) {
   # create default info list
   val <- c(list(StockCode = StockCode,
                 AssessmentYear = AssessmentYear,
-                ContactPerson = ContactPerson),
+                ContactPerson = ContactPerson,
+                Purpose = Purpose),
            list(...))
   # warn about possibly misspelt names?
   if (any(!names(val) %in% validNames("stockInfo"))) {
@@ -133,13 +173,18 @@ stockInfo <- function(StockCode, AssessmentYear, ContactPerson, ...) {
   val$NameSystemProducedFile <- paste("icesSAG R package version", utils::packageVersion("icesSAG"))
   val <- val[names(val) %in% validNames("stockInfo")]
   # add all relavent names to help with intelisense
-  val[setdiff(validNames("stockInfo"), names(val))] <- NA
+  extra_cols <- setdiff(validNames("stockInfo"), names(val))
+  val_extra <- lapply(1:length(extra_cols), function(x) NA)
+  names(val_extra) <- extra_cols
+  val <- c(val, val_extra)
+  # reorder
+  val <- val[validNames("stockInfo")]
   class(val) <- c("sag.list", class(val))
   val
 }
 
 
-
+#' @export
 print.sag.list <- function(x, digits = NULL, quote = TRUE, right = FALSE, ...) {
   # warn about possibly misspelt names?
   if (any(!names(x) %in% validNames("stockInfo"))) {
@@ -191,6 +236,7 @@ stockFishdata <- function(Year, ...) {
   val
 }
 
+#' @export
 print.sag.data.frame <- function(x, ..., digits = NULL, quote = FALSE,
                               right = TRUE, row.names = TRUE) {
   # warn about possibly misspelt names?
@@ -209,7 +255,7 @@ print.sag.data.frame <- function(x, ..., digits = NULL, quote = FALSE,
 
 validNames <- function(type = c("stockInfo", "stockFishdata")) {
   # taken from:
-  # http://dome.ices.dk/datsu/selRep.aspx?Dataset=126
+  # http://datsu.ices.dk/web/selRep.aspx?Dataset=126
   switch(type,
     stockInfo =
       c("StockCode",
@@ -245,7 +291,10 @@ validNames <- function(type = c("stockInfo", "stockFishdata")) {
       paste0("CustomLimitName", 1:5),
       paste0("CustomLimitNotes", 1:5),
       paste0("CustomSeriesName", 1:20),
-      paste0("CustomSeriesUnits", 1:20)),
+      paste0("CustomSeriesUnits", 1:20),
+      "Purpose",
+      "ModelType",
+      "ModelName"),
     stockFishdata =
       c("Year",
         "Low_Recruitment",

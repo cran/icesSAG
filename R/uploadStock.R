@@ -1,4 +1,4 @@
-#' Upload new or updated fish stock assessment results
+#' Upload New or Updated Fish Stock Assessment Results
 #'
 #' Get summary results of historical stock size, recruitment, and fishing
 #' pressure.
@@ -7,7 +7,7 @@
 #' @param fishdata a data.frame of fish data
 #' @param verbose if TRUE more verbose messages are reported
 #'
-#' @return the database key of the new / updated stock, or 0 if there was an error.
+#' @return The database key of the new / updated stock, or 0 if there was an error.
 #'
 #' @seealso
 #' \code{\link{stockInfo}} creates a list of stock information.
@@ -65,11 +65,11 @@ uploadStock <- function(info, fishdata, verbose = FALSE) {
   if (verbose)
     message("\tResults: http://", datsu_resp$ScreenResultURL)
 
-  if (datsu_resp$NoErrors != -1) {
+  if (datsu_resp$NumberOfErrors > 0) {
     stop(" Errors were found in the upload.  See\n\t http://", datsu_resp$ScreenResultURL, "\n\tfor details")
   }
 
-  # call webservice for all supplied keys
+  # call webservice
   message("Importing to database    ... ", appendLF = getOption("icesSAG.messages"))
   out <- sag_webservice("uploadStock", strSessionID = datsu_resp$SessionID)
 

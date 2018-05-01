@@ -33,7 +33,7 @@ test_that('getStockDownloadData',
 #  x <- getStockDownloadData(key)
 #  expect_is(x, "list")
 ###  expect_is(x[[1]], "data.frame")
-  x <- getStockDownloadData(-1)
+  x <- expect_warning(getStockDownloadData(-1))
   expect_is(x, "list")
   expect_null(x[[1]])
 #  x <- getStockDownloadData(c(key, -1))
@@ -48,8 +48,6 @@ test_that('getSAGTypeGraphs',
 #  options(icesSAG.use_token = TRUE)
   x <- getSAGTypeGraphs()
   expect_is(x, "data.frame")
-
-
 })
 
 

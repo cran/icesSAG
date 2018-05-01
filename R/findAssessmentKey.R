@@ -5,7 +5,9 @@
 #' @param stock a stock name, e.g. cod-347d, or cod to find all cod stocks, or NULL (default)
 #'              to process all stocks.
 #' @param year the assessment year, e.g. 2015, or 0 to process all years.
-#' @param published whether to include only years where status is "Published".
+#' @param published whether to include only years where status is "Published" (applies only
+#'                  when non-secure web services are in use, secure web service always
+#'                  returns unpublished stocks).
 #' @param regex whether to match the stock name as a regular expression.
 #' @param full whether to return a data frame with all stock list columns.
 #'
@@ -33,7 +35,7 @@ findAssessmentKey <- function(stock = NULL, year = 0, published = TRUE, regex = 
 
   # apply filters
   #  if (!getOption("icesSAG.use_token")) {
-  if (published) {
+  if (published && !getOption("icesSAG.use_token")) {
     # restrict output to only published stocks
     out <- out[out$Status == "Published",]
   }
@@ -59,6 +61,6 @@ findAssessmentKey <- function(stock = NULL, year = 0, published = TRUE, regex = 
 #' @rdname findAssessmentKeydocs
 #' @export
 findKey <- function(stock, year = 0, published = TRUE, regex = TRUE, full = FALSE) {
-  warning("findKey() is depreciated, please use findAssessmentKey() instead.")
+  .Deprecated("findAssessmentKey")
   findAssessmentKey(stock = stock, year = year, regex = regex, full = full)
 }
