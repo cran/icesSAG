@@ -20,9 +20,11 @@
 #' @author Colin Millar.
 #'
 #' @examples
+#' \dontrun{
 #' assessmentKey <- findAssessmentKey("cod-2224", year = 2016)
 #' status <- getStockStatusValues(assessmentKey)
-#' head(status)
+#' status
+#' }
 #'
 #' @export
 
@@ -34,5 +36,5 @@ getStockStatusValues <- function(assessmentKey, ...) {
   out <- lapply(assessmentKey, function(i) sag_webservice("getStockStatusValues", assessmentKey = i))
 
   # parse output
-  lapply(out, sag_parse, type = "stockStatus")
+  lapply(out, sag_parse, type = "table")
 }

@@ -4,7 +4,8 @@
 \alias{getSAG}
 \title{Get Any SAG Data}
 \usage{
-getSAG(stock, year, data = "summary", combine = TRUE, purpose = "Advice")
+getSAG(stock, year, data = "summary", combine = TRUE,
+  purpose = "Advice")
 }
 \arguments{
 \item{stock}{a stock name, e.g. cod-347d, or cod to find all cod stocks, or
@@ -12,7 +13,7 @@ NULL to process all stocks.}
 
 \item{year}{the assessment year, e.g. 2015, or 0 to process all years.}
 
-\item{data}{the data of interest, either "summary" or "refpts".}
+\item{data}{the data of interest, either "summary", "refpts" or "source".}
 
 \item{combine}{whether to combine the list output to a data frame.}
 
@@ -39,6 +40,7 @@ getSAG("her.27.3a47d", 2017, "refpts", purpose = "Benchmark")
 
 cod_summary <- getSAG("cod", 2015)
 cod_refpts <- getSAG("cod", 2015:2016, "refpts")
+cod_data <- getSAG("cod", 2017, "source-data")
 }
 }
 \seealso{

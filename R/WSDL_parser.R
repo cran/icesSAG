@@ -14,6 +14,12 @@ getWebServiceDescription <- function(secure = FALSE) {
 }
 
 
+sag_getXmlDataType <- function(which) {
+  # select one data-type
+  schema[[which]]
+}
+
+
 checkWebServices <- function(secure = FALSE, show = TRUE) {
   # check for new webservices
   services <- names(getWebServiceDescription(secure = secure))
@@ -31,4 +37,3 @@ checkWebServices <- function(secure = FALSE, show = TRUE) {
 
   invisible(list(missing = missing_services, linked = linked_services))
 }
-
