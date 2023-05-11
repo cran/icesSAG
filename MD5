@@ -1,8 +1,8 @@
-a81a9103d670d62eea54cedc75ca470a *DESCRIPTION
+37ce584f10ba32855a706e4d22fd0df8 *DESCRIPTION
 7149ad237fb2a9f29a244c37b71638fe *NAMESPACE
-c0fafb5de43af2f0b6cde9bfc10eb71a *NEWS.md
+cd0d26575a8baedc18da5049f312709a *NEWS.md
 620e3eb83600716ae187f01b28d61fca *R/SAGtokens.R
-d9b3d459310091b95051612676c93c6e *R/SAGxml.R
+78c2bbc2a3a0945dc49911c7a05bf9cb *R/SAGxml.R
 a37169e3bf0cf35547be89df68410923 *R/WSDL_parser.R
 216436e088250df0e286c0bbbd5bde41 *R/checkKeyArg.R
 f017853d847ce7e96b43b2796a3a34f4 *R/findAssessmentKey.R
@@ -21,7 +21,7 @@ d51a971f9e18a2b18e230ffc01addfac *R/getYSBRSummaryTable.R
 57daa50ca74d722cd38b313bd00da377 *R/getsetSettingsForAStock.R
 ee737549b1dea5abf9ae598697255932 *R/icesSAG-package.R
 cf3a2ebbba7b5a97c40aee48cad3c00e *R/onLoad.R
-e26097fa741fcb0ac1ccc7cb88214243 *R/sysdata.rda
+ac0392215e2a2280996d08cba1c52de2 *R/sysdata.rda
 3581c7cf337db3f30cee7ad83a6a8553 *R/uploadStock.R
 094dd7a5d09bb6dba3593aabd5118504 *R/uploadXMLFile.R
 caa4cf9b1ed885946031141568cc8620 *R/utilities.R
@@ -40,8 +40,8 @@ c73766d122dd9f6d543080afa9646880 *man/getSummaryTable.Rd
 c658a6d98bd3218693ea4e37db892fe8 *man/getTokenExpiration.Rd
 511cde04e099c6ce96ad3dd671228ed3 *man/getYSBRSummaryTable.Rd
 37fc31df7a27dae9c207f9969921915c *man/getsetStockSettings.Rd
-2912ffd9d258780b98ea6ccb6702bd42 *man/icesSAG-package.Rd
-1cbcda5b14b1dce37f161c1231903300 *man/readCreateSAGxml.Rd
+62f1a1c4b9d5741a303f8422e30d5154 *man/icesSAG-package.Rd
+2a607785a3210be3344be34966fd8782 *man/readCreateSAGxml.Rd
 ffb067d0477794ee34a5bf6ba6db29a6 *man/stockFishdata.Rd
-75dadec021b5f92d5732546bb083c51e *man/stockInfo.Rd
-4ee3c8305384872d57b302d90942ef25 *man/uploadStock.Rd
+80f8a6ab5232387066c898c4933c9d54 *man/stockInfo.Rd
+196cd82c2d0111293b6d0b084f72616d *man/uploadStock.Rd
