@@ -6,13 +6,12 @@
 \title{Get Source Data}
 \usage{
 getStockDownloadData(assessmentKey, ...)
-
-getStockSourceData(assessmentKey, ...)
 }
 \arguments{
-\item{assessmentKey}{the unique identifier of the stock assessment}
+\item{assessmentKey}{the unique identifier of the stock assessment,
+can be a vector}
 
-\item{...}{to allow scope for back compatibility}
+\item{...}{arguments passed to \code{\link{ices_get}}.}
 }
 \value{
 A data frame.

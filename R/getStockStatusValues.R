@@ -4,7 +4,7 @@
 #' pressure.
 #'
 #' @param assessmentKey the unique identifier of the stock assessment
-#' @param ... to allow scope for back compatibility
+#' @param ... arguments passed to \code{\link{ices_get}}.
 #'
 #' @return A data frame.
 #'
@@ -21,7 +21,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' assessmentKey <- findAssessmentKey("cod-2224", year = 2016)
+#' assessmentKey <- findAssessmentKey("had.27.46a20", year = 2022)
 #' status <- getStockStatusValues(assessmentKey)
 #' status
 #' }
@@ -29,12 +29,25 @@
 #' @export
 
 getStockStatusValues <- function(assessmentKey, ...) {
+  # call web service for all supplied keys
 
-  assessmentKey <- checkKeyArg(assessmentKey = assessmentKey, ...)
+  out <-
+    lapply(
+      assessmentKey,
+      function(i) {
+        x <- ices_get(
+          sag_api("StockStatusValues", assessmentKey = i), ...
+        )
+        # as.list removes warning about rownames
+        do.call(
+          rbind,
+          lapply(1:nrow(x), function(i) cbind(as.list(x[i, names(x) != "YearStatus"]), x$YearStatus[[i]]))
+        )
+      }
+    )
 
-  # call webservice for all supplied keys
-  out <- lapply(assessmentKey, function(i) sag_webservice("getStockStatusValues", assessmentKey = i))
+  # rbind output
+  out <- do.call(rbind, out)
 
-  # parse output
-  lapply(out, sag_parse, type = "stockStatus")
+  sag_clean(out)
 }

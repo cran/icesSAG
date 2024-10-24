@@ -9,7 +9,7 @@ getSummaryTable(assessmentKey, ...)
 \arguments{
 \item{assessmentKey}{the unique identifier of the stock assessment}
 
-\item{...}{to allow scope for back compatibility}
+\item{...}{arguments passed to \code{\link{ices_get}}.}
 }
 \value{
 A data frame.
@@ -20,10 +20,9 @@ pressure.
 }
 \examples{
 \dontrun{
-assessmentKey <- findAssessmentKey("cod-2224", year = 2016)
+assessmentKey <- findAssessmentKey("had.27.46a20", year = 2022)
 sumtab <- getSummaryTable(assessmentKey)
 head(sumtab)
-attributes(sumtab)$notes
 }
 }
 \seealso{
@@ -36,5 +35,5 @@ attributes(sumtab)$notes
 \code{\link{icesSAG-package}} gives an overview of the package.
 }
 \author{
-Colin Millar and Scott Large.
+Colin Millar.
 }

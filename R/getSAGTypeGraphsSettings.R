@@ -1,8 +1,9 @@
 #' Get Details on SAG Charts and Settings
 #'
-#' List all possible chart settings for each chart type (0 = general, 1 = Landings etc.).
+#' List all possible chart settings for each chart type (0 = general, 1 = Landings, ...).
 #'
 #' @param SAGChartKey the type identifier of the SAG chart, e.g. 0, 1, 2, ...
+#' @param ... arguments passed to \code{\link{ices_get}}.
 #'
 #' @return a data frame with SAG chart type IDs and settings IDs.
 #'
@@ -18,25 +19,26 @@ NULL
 
 #' @rdname getSAGSettings
 #' @export
-getSAGTypeGraphs <- function() {
+getSAGTypeGraphs <- function(...) {
   # call webservice
-  out <- sag_webservice("getSAGTypeGraphs")
+  old_value <- sag_use_token(TRUE)
+  out <-
+    ices_get_cached(
+      sag_api("SAGTypeCharts"), ...
+    )
 
-  # parse output
-  sag_parse(out)
+  sag_use_token(old_value)
+  out
 }
 
 #' @rdname getSAGSettings
 #' @export
-getSAGTypeSettings <- function(SAGChartKey) {
+getSAGTypeSettings <- function(SAGChartKey, ...) {
   # call webservice
-  out <- sag_webservice("getSAGTypeSettings", SAGChartKey = SAGChartKey)
+  out <-
+    ices_get_cached(
+      sag_api("SettingsForChartType", SAGChartKey = SAGChartKey), ...
+    )
 
-  # parse output
-  sag_parse(out)
+  out
 }
-
-
-
-
-#findChartKey <- function()

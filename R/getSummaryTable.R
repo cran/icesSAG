@@ -4,7 +4,7 @@
 #' pressure.
 #'
 #' @param assessmentKey the unique identifier of the stock assessment
-#' @param ... to allow scope for back compatibility
+#' @param ... arguments passed to \code{\link{ices_get}}.
 #'
 #' @return A data frame.
 #'
@@ -17,24 +17,71 @@
 #'
 #' \code{\link{icesSAG-package}} gives an overview of the package.
 #'
-#' @author Colin Millar and Scott Large.
+#' @author Colin Millar.
 #'
 #' @examples
 #' \dontrun{
-#' assessmentKey <- findAssessmentKey("cod-2224", year = 2016)
+#' assessmentKey <- findAssessmentKey("had.27.46a20", year = 2022)
 #' sumtab <- getSummaryTable(assessmentKey)
 #' head(sumtab)
-#' attributes(sumtab)$notes
 #' }
 #' @export
 
 getSummaryTable <- function(assessmentKey, ...) {
-
-  assessmentKey <- checkKeyArg(assessmentKey = assessmentKey, ...)
-
   # call webservice for all supplied keys
-  out <- lapply(assessmentKey, function(i) sag_webservice("getSummaryTable", assessmentKey = i))
 
-  # parse output
-  lapply(out, sag_parse, type = "summary")
+  out <-
+    lapply(
+      assessmentKey,
+      function(i) {
+        x <-
+          ices_get(
+            sag_api("SummaryTable", assessmentKey = i), ...
+          )
+        # format into a data.frame
+        cbind(
+          lapply(x[names(x) != "Lines"], function(y) if (is.null(y)) NA else y),
+          x$Lines
+          )
+      }
+    )
+
+  # rbind output
+  out <- do.call(rbind, out)
+
+  # temporary fix, untill webservice is reverted
+  new_names <-
+    c(
+      "Year", "Recruitment", "High_Recruitment", "Low_Recruitment",
+      "Low_SSB", "SSB", "High_SSB",
+      "Low_F", "F", "High_F",
+      "Catches", "Landings", "Discards",
+      "IBC", "Unallocated_Removals",
+      "LandingsBMS", "TBiomass", "LogbookRegisteredDiscards",
+      "StockPublishNote", "Purpose", "FAge",
+      "FishStock", "RecruitmentAge", "AssessmentYear",
+      "Units", "StockSizeDescription", "StockSizeUnits",
+      "FishingPressureDescription", "FishingPressureUnits",
+      "AssessmentKey", "AssessmentComponent"
+    )
+
+  old_names <-
+    c(
+      "Year", "recruitment", "high_recruitment", "low_recruitment",
+      "low_SSB", "SSB", "high_SSB",
+      "low_F", "F", "high_F",
+      "catches", "landings", "discards",
+      "IBC", "Unallocated_Removals",
+      "LandingsBMS", "TBiomass", "LogbookRegisteredDiscards",
+      "StockPublishNote", "Purpose", "Fage",
+      "fishstock", "recruitment_age", "AssessmentYear",
+      "units", "stockSizeDescription", "stockSizeUnits",
+      "fishingPressureDescription", "fishingPressureUnits",
+      "AssessmentKey", "AssessmentComponent"
+    )
+
+  out <- out[new_names]
+  names(out) <- old_names
+
+  sag_clean(out)
 }

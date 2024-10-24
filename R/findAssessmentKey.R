@@ -22,13 +22,8 @@
 #'
 #' @examples
 #' \dontrun{
-#' findAssessmentKey("cod-347d", 2015, full = TRUE)
+#' findAssessmentKey("had.27.46a20", 2023, full = TRUE)
 #' }
-#' @rdname findAssessmentKeydocs
-#' @name findAssessmentKey
-NULL
-
-#' @rdname findAssessmentKeydocs
 #' @export
 findAssessmentKey <- function(stock = NULL, year = 0, published = TRUE, regex = TRUE, full = FALSE) {
   # check stock names for long dashes:
@@ -42,10 +37,9 @@ findAssessmentKey <- function(stock = NULL, year = 0, published = TRUE, regex = 
   out <- do.call(rbind, lapply(year, getListStocks))
 
   # apply filters
-  #  if (!getOption("icesSAG.use_token")) {
   if (published && !getOption("icesSAG.use_token")) {
     # restrict output to only published stocks
-    out <- out[out$Status == "Published", ]
+    out <- out[trimws(out$Status) == "Published", ]
   }
 
   if (!is.null(stock)) {
@@ -64,11 +58,4 @@ findAssessmentKey <- function(stock = NULL, year = 0, published = TRUE, regex = 
   } else {
     out$AssessmentKey
   }
-}
-
-#' @rdname findAssessmentKeydocs
-#' @export
-findKey <- function(stock, year = 0, published = TRUE, regex = TRUE, full = FALSE) {
-  .Deprecated("findAssessmentKey")
-  findAssessmentKey(stock = stock, year = year, regex = regex, full = full)
 }

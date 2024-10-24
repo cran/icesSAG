@@ -23,8 +23,9 @@ NULL to process all stocks.}
 A data frame (default) or a list if \code{combine} is \code{TRUE}.
 }
 \description{
-This function combines the functionality of getListStocks,
-getFishStockReferencePoints, and getSummaryTable.
+This function combines the functionality of \code{\link{getListStocks}},
+\code{\link{getFishStockReferencePoints}}, \code{\link{getSummaryTable}}
+and \code{\link{getStockDownloadData}}.
 It supports querying many stocks and years in one function call.
 }
 \note{
@@ -32,25 +33,24 @@ Only years with "Published" status are returned.
 }
 \examples{
 \dontrun{
-summary <- getSAG("cod-347d", 2015)
-refpts <- getSAG("cod-347d", 2015, "refpts")
+summary <- getSAG("had.27.46a20", 2022)
+refpts <- getSAG("had.27.46a20", 2022, "refpts")
 
-getSAG("her.27.3a47d", 2017, "refpts", purpose = "Benchmark")
-
-cod_summary <- getSAG("cod", 2015)
+cod_summary <- getSAG("cod", 2022)
 cod_refpts <- getSAG("cod", 2015:2016, "refpts")
 cod_data <- getSAG("cod", 2017, "source-data")
 }
 }
 \seealso{
-\code{\link{getListStocks}}, \code{\link{getSummaryTable}}, and
-  \code{\link{getFishStockReferencePoints}} get a list of stocks, summary
-  results, and reference points.
+\code{\link{getListStocks}}, \code{\link{getSummaryTable}},
+  \code{\link{getFishStockReferencePoints}}, and
+  \code{\link{getStockDownloadData}} get a list of stocks, summary
+  results, reference points, and all data including custom columns.
 
 \code{\link{findAssessmentKey}} finds lookup keys.
 
 \code{\link{icesSAG-package}} gives an overview of the package.
 }
 \author{
-Arni Magnusson and Colin Millar.
+Colin Millar.
 }

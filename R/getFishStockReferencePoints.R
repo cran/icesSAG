@@ -3,7 +3,7 @@
 #' Get biological reference points for all stocks in a given assessment year.
 #'
 #' @param assessmentKey the unique identifier of the stock assessment
-#' @param ... to allow scope for back compatibility
+#' @param ... arguments passed to \code{\link{ices_get}}.
 #'
 #' @return A data frame.
 #'
@@ -16,28 +16,36 @@
 #'
 #' \code{\link{icesSAG-package}} gives an overview of the package.
 #'
-#' @author Colin Millar and Scott Large.
+#' @author Colin Millar.
 #'
 #' @examples
 #' \dontrun{
-#' assessmentKey <- findAssessmentKey("cod-2224", year = 2016)
+#' assessmentKey <- findAssessmentKey("cod.27.21", year = 2023)
 #' refpts <- getFishStockReferencePoints(assessmentKey)
 #' refpts
 #'
-#' #To get all reference points in a given assessment year:
-#' keys2016 <- findAssessmentKey(year = 2016)
-#' refpts2016 <- getFishStockReferencePoints(keys2016)
-#' refpts2016
+#' # To get all reference points in a given assessment year:
+#' keys2022 <- findAssessmentKey(year = 2022, full = TRUE)
+#' keys2022 <- keys2022[keys2022$Purpose == "Advice",]
+#' refpts2022 <- getFishStockReferencePoints(keys2022$AssessmentKey)
+#' refpts2022
 #' }
 #' @export
 
 getFishStockReferencePoints <- function(assessmentKey, ...) {
-
-  assessmentKey <- checkKeyArg(assessmentKey = assessmentKey, ...)
-
   # call webservice for all supplied keys
-  out <- lapply(assessmentKey, function(i) sag_webservice("getFishStockReferencePoints", assessmentKey = i))
+  out <-
+    lapply(
+      assessmentKey,
+      function(i) {
+        ices_get(
+          sag_api("FishStockReferencePoints", assessmentKey = i), ...
+        )
+      }
+    )
 
   # parse output
-  lapply(out, sag_parse)
+  out <- do.call(rbind, out)
+
+  sag_clean(out)
 }
