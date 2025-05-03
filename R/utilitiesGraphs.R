@@ -1,16 +1,32 @@
+
 get_plot_path <- function(assessmentKey, type = 1, ...) {
     # call webservice for all supplied keys
     old_value <- sag_use_token(TRUE)
-    out <-
+    ret <-
       sapply(
         assessmentKey,
         function(i) {
-          ices_get(
-            sag_api("get_plot_path", assessmentKey = i, sgKey = type), ...
+          try(
+            sag_get(
+              sag_api("get_plot_path", assessmentKey = i, sgKey = type), content = FALSE, ...
+            )
           )
         }
       )
     sag_use_token(old_value)
+
+  status <- apply(ret, 2, "[[", "status_code")
+
+  out <- character(length(assessmentKey))
+  ok_status <- c("200")
+  if (any(status %in% ok_status)) {
+    out[status %in% ok_status] <-
+      apply(
+        ret[,  status %in% ok_status, drop = FALSE],
+        2,
+        function(x) rawToChar(x$content)
+      )
+  }
 
   out
 }
@@ -19,7 +35,7 @@ get_image_internal <- function(paths, ...) {
 
   # call webservice for all supplied keys
   old_value <- sag_use_token(TRUE)
-  out <- lapply(paths, ices_get, ...)
+  out <- lapply(paths, sag_get, ...)
   sag_use_token(old_value)
 
   # set class
